@@ -5,7 +5,12 @@
 	<body>
 		<div class="container">
 			<h1>w3b cr4wl3r</h1>
-			<input type="text" placeholder="Enter a URL here">
+			<form method="post">
+				<input type="text" name="url" placeholder="Enter a URL here">
+			</form>
+			<div class="results">
+				<p><%= message %></p>
+			</div>
 		</div>
 	</body>
 </html>
