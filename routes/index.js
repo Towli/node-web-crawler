@@ -9,8 +9,11 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function (req, res, next) {
 	var url = req.body.url;
-	var message = crawler(url);
-	res.render('index', { message : message });
+	var message = "";
+	crawler.crawl(url, function() {
+		crawler.parse_static_assets();
+		res.render('index', { message : crawler.body });
+	});
 });
 
 module.exports = router;
