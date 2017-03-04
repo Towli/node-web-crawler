@@ -12,7 +12,11 @@ router.post('/', function (req, res, next) {
 	var message = "";
 	crawler.crawl(url, function() {
 		crawler.parse_static_assets();
-		res.render('index', { message : crawler.body });
+		crawler.static_assets_to_JSON(function(assets) {
+			console.log("Printing assets...");
+			console.log(JSON.stringify(assets));
+			res.render('index', { message : JSON.stringify(assets)});	
+		});
 	});
 });
 

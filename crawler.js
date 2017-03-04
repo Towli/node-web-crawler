@@ -31,8 +31,6 @@ Crawler.parse_static_assets = function() {
 			images: $body.find('img') 
 		};
 
-		console.log("static_assets length: " + static_assets.length);
-
 		static_assets_JSON.scripts.each(function(i, item) {
 			final_static_assets.push($(item).attr('src'));
 		});
@@ -45,12 +43,21 @@ Crawler.parse_static_assets = function() {
 			final_static_assets.push($(item).attr('src'));
 		});
 		Crawler.static_assets = final_static_assets;
-		console.log(final_static_assets);
+		//console.log(final_static_assets);
 	});
 }
 
-Crawler.static_assets_to_JSON = function() {
-	var static_assets_JSON = {};
+Crawler.static_assets_to_JSON = function(callback) {
+	var static_assets_JSON = {
+		url : ""
+	};
+	var assets = [];
+
+	for (var i in Crawler.static_assets)
+		assets[i] = Crawler.static_assets[i];
+
+	static_assets_JSON.assets = assets;
+	callback(static_assets_JSON);
 }
 
 module.exports = Crawler;
