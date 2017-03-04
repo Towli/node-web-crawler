@@ -3,11 +3,11 @@ var jquery = require('jquery');
 var jsdom = require('jsdom');
 
 /* Creates a new Crawler */
-var Crawler = function(baseURL) {
-	this.baseURL = baseURL;
+function Crawler(baseURL) {
+	Crawler.baseURL = baseURL;
 }
 
-Crawler.crawl = function(url, callback) {
+Crawler.prototype.crawl = function(url, callback) {
 	console.log("crawling in my skin...");
 	request({uri: url}, function (err, response, body) {	
 		if (err && response.statusCode !== 200) {
@@ -20,7 +20,7 @@ Crawler.crawl = function(url, callback) {
 	});
 }
 
-Crawler.parse_static_assets = function() {
+Crawler.prototype.parse_static_assets = function() {
 	jsdom.env(Crawler.body, [jquery], function(err, window) {
 		if (err) throw err;
 		var final_static_assets = [];
@@ -50,16 +50,12 @@ Crawler.parse_static_assets = function() {
 	});
 }
 
-Crawler.static_assets_to_JSON = function(callback) {
+Crawler.prototype.static_assets_to_JSON = function(callback) {
+	var assets = Crawler.static_assets;
 	var static_assets_JSON = {
-		url : ""
+		url: Crawler.baseURL,
+		assets: assets
 	};
-	var assets = [];
-
-	for (var i in Crawler.static_assets)
-		assets[i] = Crawler.static_assets[i];
-
-	static_assets_JSON.assets = assets;
 	callback(static_assets_JSON);
 }
 
