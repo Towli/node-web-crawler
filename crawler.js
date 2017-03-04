@@ -2,7 +2,10 @@ var request = require('request');
 var jquery = require('jquery');
 var jsdom = require('jsdom');
 
-var Crawler = {};
+/* Creates a new Crawler */
+var Crawler = function(baseURL) {
+	this.baseURL = baseURL;
+}
 
 Crawler.crawl = function(url, callback) {
 	console.log("crawling in my skin...");
