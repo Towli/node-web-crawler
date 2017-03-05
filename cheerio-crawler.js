@@ -14,6 +14,7 @@ function CheerioCrawler(base_url) {
 	CheerioCrawler.pages_visited = {};
 	CheerioCrawler.pages_to_visit = [];
 	CheerioCrawler.crawl_counter = 0;
+	CheerioCrawler.static_assets = [];
 }
 
 CheerioCrawler.prototype.start = function(callback) {
@@ -61,7 +62,9 @@ CheerioCrawler.prototype.visit_page = function(url, callback) {
 	     // Parse the DOM body
 	     var $ = cheerio.load(body);
 	     CheerioCrawler.prototype.collect_internal_links($);
-	     callback();
+	     CheerioCrawler.prototype.scrape_static_assets(url, $, function() {
+	     	callback();
+	     });
 	   }
 	   if(response.statusCode === 404) {
 	   	console.log("Error 404 attempting to visit page: " + url);
@@ -90,6 +93,40 @@ CheerioCrawler.prototype.collect_internal_links = function($) {
 	relative_links.each(function() {
 		CheerioCrawler.pages_to_visit.push(CheerioCrawler.base_url + $(this).attr('href'))
 	});
+}
+
+CheerioCrawler.prototype.scrape_static_assets = function(url, $, callback) {
+	var $head = $('head');
+	var $body = $('body');
+	var scraped_assets = [];
+
+	var static_assets_JSON = {
+		scripts: $head.find('script'),
+		links: $head.find('link'),
+		images: $body.find('img') 
+	};
+
+	static_assets_JSON.scripts.each(function(i, item) {
+		if ($(item).attr('src') !== undefined)
+			scraped_assets.push($(item).attr('src'));
+	});
+
+	static_assets_JSON.links.each(function(i, item) {
+		if ($(item).attr('href') !== undefined)
+			scraped_assets.push($(item).attr('href'));
+	});
+
+	static_assets_JSON.images.each(function(i, item) {
+		if ($(item).attr('src') !== undefined)
+			scraped_assets.push($(item).attr('src'));
+	});
+
+	var scraped_assets_JSON = {
+		url: url,
+		assets: scraped_assets
+	};
+	console.log(scraped_assets_JSON);
+	//CheerioCrawler.static_assets.push(scraped_assets);
 }
 
 module.exports = CheerioCrawler;
