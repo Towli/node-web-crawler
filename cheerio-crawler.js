@@ -37,7 +37,6 @@ CheerioCrawler.prototype.crawl = function(callback) {
 	if (next_page in CheerioCrawler.pages_visited) {
 		// Already visited this page, so repeat the crawl
 		console.log(next_page + ' already visited - Repeating crawl...');
-		console.log('sanity check: ' + next_page + " | " + JSON.stringify(CheerioCrawler.pages_visited));
 		CheerioCrawler.prototype.crawl(url, callback);
 	}
 	else {
@@ -63,6 +62,10 @@ CheerioCrawler.prototype.visit_page = function(url, callback) {
 	     var $ = cheerio.load(body);
 	     CheerioCrawler.prototype.collect_internal_links($);
 	     callback();
+	   }
+	   if(response.statusCode === 404) {
+	   	console.log("Error 404 attempting to visit page: " + url);
+		callback();
 	   }
 	});
 }
