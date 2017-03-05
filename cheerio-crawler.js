@@ -12,15 +12,45 @@ function CheerioCrawler(base_url) {
     }
 	CheerioCrawler.base_url = base_url;
 	CheerioCrawler.pages_visited = {};
-	CheerioCrawler.pages_to_visit = {};
+	CheerioCrawler.pages_to_visit = [];
+	CheerioCrawler.crawl_counter = 0;
 }
 
 CheerioCrawler.prototype.start = function(callback) {
-	CheerioCrawler.prototype.crawl(CheerioCrawler.base_url);
-	callback();
+	console.log(url.parse(CheerioCrawler.base_url).href);
+	CheerioCrawler.pages_to_visit.push(url.parse(CheerioCrawler.base_url).href);
+	console.log("CheerioCrawler first page pushed: " + CheerioCrawler.pages_to_visit);
+	CheerioCrawler.prototype.crawl(function() {
+		console.log("Crawling complete.");
+		callback();
+	});
 }
 
-CheerioCrawler.prototype.crawl = function(url, callback) {
+CheerioCrawler.prototype.crawl = function(callback) {
+	var next_page = CheerioCrawler.pages_to_visit.pop();
+	if (next_page == undefined) {
+		console.log('next_page is undefined so stopping crawl.');
+		return;
+	}
+	console.log('Crawl #' + ++CheerioCrawler.crawl_counter);
+	console.log(next_page);
+	if (next_page in CheerioCrawler.pages_visited) {
+		// Already visited this page, so repeat the crawl
+		console.log(next_page + ' already visited - Repeating crawl...');
+		console.log('sanity check: ' + next_page + " | " + JSON.stringify(CheerioCrawler.pages_visited));
+		CheerioCrawler.prototype.crawl(url, callback);
+	}
+	else {
+		CheerioCrawler.prototype.visit_page(next_page, function() {
+			console.log("Page " + next_page + " successfully visited.");
+			CheerioCrawler.prototype.crawl(callback);
+		});	// New page we haven't visited
+	}
+}
+
+CheerioCrawler.prototype.visit_page = function(url, callback) {
+	CheerioCrawler.pages_visited[url] = true;	// Add visit page to the set
+	console.log("Added " + url + " to pages_visited.");
 	console.log("Crawling page: " + url);
 	request(url, function (err, response, body) {	
 	   if (err) { 
@@ -32,6 +62,7 @@ CheerioCrawler.prototype.crawl = function(url, callback) {
 	     // Parse the DOM body
 	     var $ = cheerio.load(body);
 	     CheerioCrawler.prototype.collect_internal_links($);
+	     callback();
 	   }
 	});
 }
@@ -52,6 +83,10 @@ CheerioCrawler.prototype.collect_internal_links = function($) {
 
 	console.log("Found " + all_relative_links.length + " relative links");
 	console.log("Found " + all_absolute_links.length + " absolute links");
+
+	relative_links.each(function() {
+		CheerioCrawler.pages_to_visit.push(CheerioCrawler.base_url + $(this).attr('href'))
+	});
 }
 
 module.exports = CheerioCrawler;
