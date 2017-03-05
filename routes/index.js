@@ -4,7 +4,7 @@ var Crawler = require('../crawler.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	res.render('index', { message : "" });
+	res.render('index', { message : "", pages : "" });
 });
 
 /* POST url */
@@ -15,7 +15,7 @@ router.post('/', function (req, res, next) {
 		crawler.scrape_static_assets(function() {
 			crawler.static_assets_to_JSON(function(assets) {
 				console.log(assets);
-				res.render('index', { message : assets});
+				res.render('index', { message : assets, pages : crawler.pages });
 			});
 		});
 	});

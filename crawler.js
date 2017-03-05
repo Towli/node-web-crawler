@@ -1,6 +1,7 @@
 var request = require('request');
 var jquery = require('jquery');
 var jsdom = require('jsdom');
+var url = require('url');
 
 /* Creates a new Crawler */
 function Crawler(baseURL) {
@@ -21,8 +22,22 @@ Crawler.prototype.crawl = function(url, callback) {
 		} else {
 			Crawler.url = url;
 			Crawler.body = body;
+			Crawler.get_navigable_pages(body);
 			callback();
 		}
+	});
+}
+
+Crawler.get_navigable_pages = function(body) {
+	jsdom.env(Crawler.body, [jquery], function(err, window) {
+		if (err) throw err;
+		var $ = require('jquery')(window);
+		var $body = $('body');
+		var $pages = $('a');
+		Crawler.pages = [];
+		$pages.each(function(i, item) {
+			Crawler.pages.push($(item).attr('href'));
+		});
 	});
 }
 
