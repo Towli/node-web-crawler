@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Crawler = require('../crawler.js');
+var CheerioCrawler = require('../cheerio-crawler.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,14 +11,9 @@ router.get('/', function(req, res, next) {
 /* POST url */
 router.post('/', function (req, res, next) {
 	var url = req.body.url;
-	var crawler = new Crawler(url);
+	var crawler = new CheerioCrawler(url);
 	crawler.crawl(url, function() {
-		crawler.scrape_static_assets(function() {
-			crawler.static_assets_to_JSON(function(assets) {
-				console.log(assets);
-				res.render('index', { message : assets, pages : crawler.pages });
-			});
-		});
+		res.render('index', { message : "", pages : "" });
 	});
 });
 
