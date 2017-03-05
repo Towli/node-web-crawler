@@ -20,7 +20,7 @@ Crawler.prototype.crawl = function(url, callback) {
 	});
 }
 
-Crawler.prototype.parse_static_assets = function() {
+Crawler.prototype.scrape_static_assets = function(callback) {
 	jsdom.env(Crawler.body, [jquery], function(err, window) {
 		if (err) throw err;
 		var final_static_assets = [];
@@ -45,8 +45,10 @@ Crawler.prototype.parse_static_assets = function() {
 		static_assets_JSON.images.each(function(i, item) {
 			final_static_assets.push($(item).attr('src'));
 		});
+
 		Crawler.static_assets = final_static_assets;
-		//console.log(final_static_assets);
+		
+		callback();
 	});
 }
 

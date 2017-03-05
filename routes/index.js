@@ -7,14 +7,16 @@ router.get('/', function(req, res, next) {
 	res.render('index', { message : "" });
 });
 
+/* POST url */
 router.post('/', function (req, res, next) {
 	var url = req.body.url;
 	var crawler = new Crawler(url);
 	crawler.crawl(url, function() {
-		crawler.parse_static_assets();
-		crawler.static_assets_to_JSON(function(assets) {
-			console.log(assets);
-			res.render('index', { message : assets});
+		crawler.scrape_static_assets(function() {
+			crawler.static_assets_to_JSON(function(assets) {
+				console.log(assets);
+				res.render('index', { message : assets});
+			});
 		});
 	});
 });
