@@ -12,6 +12,7 @@ function Crawler(baseURL) {
         throw new Error("WebCrawler needs a URL string for the base url.");
     }
 	Crawler.baseURL = baseURL;
+	Crawler.queue = [];
 }
 
 Crawler.prototype.crawl = function(url, callback) {
@@ -28,16 +29,25 @@ Crawler.prototype.crawl = function(url, callback) {
 	});
 }
 
+Crawler.add_pages_to_queue = function (pages) {
+	Crawler.queue.push(pages);
+	console.log('Queue is now: ' + Crawler.queue);
+}
+
 Crawler.get_navigable_pages = function(body) {
+	var crawler = this;
 	jsdom.env(Crawler.body, [jquery], function(err, window) {
 		if (err) throw err;
 		var $ = require('jquery')(window);
 		var $body = $('body');
 		var $pages = $('a');
-		Crawler.pages = [];
+		var pages = [];
 		$pages.each(function(i, item) {
-			Crawler.pages.push($(item).attr('href'));
+			pages.push($(item).attr('href'));
 		});
+		console.log(pages);
+		console.log("there are " + pages.length + " navigable pages");
+		Crawler.add_pages_to_queue(pages);
 	});
 }
 
