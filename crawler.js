@@ -4,6 +4,12 @@ var jsdom = require('jsdom');
 
 /* Creates a new Crawler */
 function Crawler(baseURL) {
+    if (arguments.length > 1 || arguments.length < 1) {
+        throw new Error("WebCrawler takes a single URL when initialized.");
+    }
+    if (typeof baseURL !== "string") {
+        throw new Error("WebCrawler needs a URL string for the base url.");
+    }
 	Crawler.baseURL = baseURL;
 }
 
@@ -47,7 +53,7 @@ Crawler.prototype.scrape_static_assets = function(callback) {
 		});
 
 		Crawler.static_assets = final_static_assets;
-		
+
 		callback();
 	});
 }
