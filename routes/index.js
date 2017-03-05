@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function (req, res, next) {
 	var url = req.body.url;
 	var crawler = new CheerioCrawler(url);
-	crawler.crawl(url, function() {
+	crawler.start(function() {
 		res.render('index', { message : "", pages : "" });
 	});
 });
