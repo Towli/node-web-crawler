@@ -12,15 +12,18 @@
 						<div class="form-group">
 							<input class="form-control" type="url" name="url" placeholder="Enter a URL here">
 						</div>
+						<button type="submit" class="btn btn-primary">Crawl</button>
 					</form>	
 				</div>
 			</div>
 			<hr>
 			<div class="results">
 				<h3>Static Assets</h3>
-				<% for (var i in message.assets) { %>
-					<p><%= message.assets[i] %></p>
-				<% } %>
+					<pre>
+						<code>
+							<%= assets %>
+						</code>
+					</pre>
 			</div>
 		</div>
 	</body>

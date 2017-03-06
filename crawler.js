@@ -37,6 +37,7 @@ Crawler.prototype.start = function(callback) {
 	Crawler.prototype.crawl(function() {
 		console.log("Crawling complete.");
 		console.log(Crawler.static_assets);
+		callback();
 	});
 }
 
@@ -96,6 +97,11 @@ Crawler.prototype.visit_page = function(url, callback) {
 			});
 		}
 
+		if(response.statusCode === 403) {
+			console.log("Error 403 attempting to visit page: " + url);
+			callback();
+		}
+
 		if(response.statusCode === 404) {
 			console.log("Error 404 attempting to visit page: " + url);
 			callback();
@@ -117,26 +123,25 @@ Crawler.prototype.collect_internal_links = function($) {
 	var all_relative_links = [];
 	var all_absolute_links = [];
 
-	var relative_links = $("a[href^='/']");
+	var relative_links = $('body').find("a[href^='/']");
 	relative_links.each(function() {
 		all_relative_links.push($(this).attr('href'));
 	});
 
-	var absolute_links = $("a[href^='http']");
+	/*var absolute_links = $("a[href^='http']");
 	absolute_links.each(function() {
 		all_absolute_links.push($(this).attr('href'));
-	});
+	});*/
 
 	console.log("Found " + all_relative_links.length + " relative links");
-	console.log("Found " + all_absolute_links.length + " absolute links");
+	//console.log("Found " + all_absolute_links.length + " absolute links");
 
 	var resolved_link = "";
 	relative_links.each(function(i, item) {
 		resolved_link = Crawler.base_url + $(this).attr('href');
-		if (resolved_link in Crawler.pages_visited)
-			console.log('Not adding ' + resolved_link + ' to queue');
-		else
-			Crawler.pages_to_visit.push(Crawler.base_url + $(this).attr('href'))
+		if (!(resolved_link in Crawler.pages_visited) && !(resolved_link in Crawler.pages_to_visit))
+			Crawler.pages_to_visit.push(Crawler.base_url + $(this).attr('href'));
+			
 	});
 }
 
