@@ -15,11 +15,15 @@ function Crawler(base_url) {
     if (typeof base_url !== "string") {
         throw new Error("WebCrawler needs a URL string for the base url.");
     }
-	Crawler.base_url = base_url;
+	Crawler.base_url = Crawler.remove_trailing_slash(base_url);
 	Crawler.pages_visited = {};
 	Crawler.pages_to_visit = [];
 	Crawler.crawl_counter = 0;
 	Crawler.static_assets = [];
+}
+
+Crawler.remove_trailing_slash = function(url) {
+	return url.replace(/\/$/, "");
 }
 
 /**
