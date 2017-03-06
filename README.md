@@ -15,12 +15,12 @@ For each page it visits, it determines the URLs of every static asset on that pa
 	Using npm or any live-reload utility, run the server and navigate to http://localhost:8000 (by default).
 
 	```
-		npm start	app.js
+		npm start app.js
 	```
 
 	To change the port the server is running on, change the following line in the bin/www folder:
 	```
-	var port = normalizePort(process.env.PORT || '8000');
+		var port = normalizePort(process.env.PORT || '8000');
 	```
 
 ## Usage
@@ -45,16 +45,18 @@ For each page it visits, it determines the URLs of every static asset on that pa
 			});
 	```
 	Results in the following JSON:
-	[ { url: 'https://brew.sh/',
-    assets:
-     [ 'http://brew.sh/',
-       'http://brew.sh/atom.xml',
-       '/img/favicon.ico',
-       '/img/favicon-16x16.png',
-       '/img/favicon-32x32.png',
-       '/img/favicon-96x96.png',
-       ... ] 
-       			} ]
+	```
+		[ { url: 'https://brew.sh/',
+	    assets:
+	     [ 'http://brew.sh/',
+	       'http://brew.sh/atom.xml',
+	       '/img/favicon.ico',
+	       '/img/favicon-16x16.png',
+	       '/img/favicon-32x32.png',
+	       '/img/favicon-96x96.png',
+	       ... ] 
+	       			} ]
+	```
        (and so on).
 
 	Though, the crawler can be used outside of a web-app context as well.
