@@ -28,6 +28,8 @@ For each page it visits, it determines the URLs of every static asset on that pa
 	The web crawler works well sitting with middleware since the callback of the start() 
 	function can be used to render a page, passing the retrieved static assets.
 
+	### Implementation
+
 	```
 		var Crawler = require([PATH TO CRAWLER.JS]);
 		
@@ -59,7 +61,12 @@ For each page it visits, it determines the URLs of every static asset on that pa
 	```
        (and so on).
 
-	Though, the crawler can be used outside of a web-app context as well.
+	### Usage though Web Interface
+	Given a URL through the web UI, the crawler will begin crawling. As the crawler does not run concurrently, the execution time may take a few minutes depending on the website.
+
+	Upon passing a URL and pressing 'Crawl', a series of STDOUTs will be printed (visible through the terminal session running the server). When the crawler is finished, a concatenated JSON will be returned through both STDOUT and also in the Web App, displaying a mapping of all the static assets on the navigable domain.
+
+	Note: the crawler can be used outside of a web-app context as well.
 
 ## Dependencies
 
@@ -68,3 +75,9 @@ For each page it visits, it determines the URLs of every static asset on that pa
 - jQuery
 - Cheerio
 - url
+
+## Moving Forwards
+
+Taking this crawler further includes the following:
+
+- 
