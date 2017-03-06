@@ -123,8 +123,13 @@ Crawler.prototype.collect_internal_links = function($) {
 	console.log("Found " + all_relative_links.length + " relative links");
 	console.log("Found " + all_absolute_links.length + " absolute links");
 
-	relative_links.each(function() {
-		Crawler.pages_to_visit.push(Crawler.base_url + $(this).attr('href'))
+	var resolved_link = "";
+	relative_links.each(function(i, item) {
+		resolved_link = Crawler.base_url + $(this).attr('href');
+		if (resolved_link in Crawler.pages_visited)
+			console.log('Not adding ' + resolved_link + ' to queue');
+		else
+			Crawler.pages_to_visit.push(Crawler.base_url + $(this).attr('href'))
 	});
 }
 
