@@ -97,21 +97,13 @@ Crawler.prototype.visit_page = function(url, callback) {
 			Crawler.prototype.collect_internal_links($);
 			Crawler.prototype.scrape_static_assets(url, $, function() {
 				callback();
+				return;
 			});
 		}
 
-		if(response.statusCode === 403) {
-			console.log("Error 403 attempting to visit page: " + url);
-			callback();
-		}
-
-		if(response.statusCode === 404) {
-			console.log("Error 404 attempting to visit page: " + url);
-			callback();
-		}
-
-		if(response.statusCode === 500) {
-			console.log("Error 404 attempting to visit page: " + url);
+		if(response.statusCode === 403 || response.statusCode === 404 
+			|| response.statusCode === 500) {
+			console.log("Error " + response.statusCode + " attempting to visit page: " + url);
 			callback();
 		}
 	});
@@ -124,20 +116,13 @@ Crawler.prototype.visit_page = function(url, callback) {
  */
 Crawler.prototype.collect_internal_links = function($) {
 	var all_relative_links = [];
-	var all_absolute_links = [];
 
 	var relative_links = $('body').find("a[href^='/']");
 	relative_links.each(function() {
 		all_relative_links.push($(this).attr('href'));
 	});
 
-	/*var absolute_links = $("a[href^='http']");
-	absolute_links.each(function() {
-		all_absolute_links.push($(this).attr('href'));
-	});*/
-
 	console.log("Found " + all_relative_links.length + " relative links");
-	//console.log("Found " + all_absolute_links.length + " absolute links");
 
 	var resolved_link = "";
 	relative_links.each(function(i, item) {
