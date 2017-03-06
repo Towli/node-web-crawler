@@ -23,7 +23,7 @@ CheerioCrawler.prototype.start = function(callback) {
 	console.log("CheerioCrawler first page pushed: " + CheerioCrawler.pages_to_visit);
 	CheerioCrawler.prototype.crawl(function() {
 		console.log("Crawling complete.");
-		callback();
+		console.log(CheerioCrawler.static_assets);
 	});
 }
 
@@ -31,14 +31,14 @@ CheerioCrawler.prototype.crawl = function(callback) {
 	var next_page = CheerioCrawler.pages_to_visit.pop();
 	if (next_page == undefined) {
 		console.log('next_page is undefined so stopping crawl.');
-		return;
+		callback();
 	}
 	console.log('Crawl #' + ++CheerioCrawler.crawl_counter);
 	console.log(next_page);
 	if (next_page in CheerioCrawler.pages_visited) {
 		// Already visited this page, so repeat the crawl
 		console.log(next_page + ' already visited - Repeating crawl...');
-		CheerioCrawler.prototype.crawl(url, callback);
+		CheerioCrawler.prototype.crawl(callback);
 	}
 	else {
 		CheerioCrawler.prototype.visit_page(next_page, function() {
@@ -106,27 +106,21 @@ CheerioCrawler.prototype.scrape_static_assets = function(url, $, callback) {
 		images: $body.find('img') 
 	};
 
-	static_assets_JSON.scripts.each(function(i, item) {
-		if ($(item).attr('src') !== undefined)
-			scraped_assets.push($(item).attr('src'));
-	});
-
-	static_assets_JSON.links.each(function(i, item) {
-		if ($(item).attr('href') !== undefined)
-			scraped_assets.push($(item).attr('href'));
-	});
-
-	static_assets_JSON.images.each(function(i, item) {
-		if ($(item).attr('src') !== undefined)
-			scraped_assets.push($(item).attr('src'));
-	});
+	for (var key in static_assets_JSON) {
+		static_assets_JSON[key].each(function(i, item) {
+			if ($(item).attr('src') !== undefined)
+				scraped_assets.push($(item).attr('src'));
+			else if ($(item).attr('href') !== undefined)
+				scraped_assets.push($(item).attr('href'));
+		});
+	}
 
 	var scraped_assets_JSON = {
 		url: url,
 		assets: scraped_assets
 	};
-	console.log(scraped_assets_JSON);
-	//CheerioCrawler.static_assets.push(scraped_assets);
+	CheerioCrawler.static_assets.push(scraped_assets_JSON);
+	callback();
 }
 
 module.exports = CheerioCrawler;
