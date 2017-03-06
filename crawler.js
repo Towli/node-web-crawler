@@ -81,23 +81,30 @@ Crawler.prototype.visit_page = function(url, callback) {
 	console.log("Added " + url + " to pages_visited.");
 	console.log("Crawling page: " + url);
 	request(url, function (err, response, body) {	
-	   if (err) { 
-   		console.log("Error: " + err);
-	   }
-	   // Check status code
-	   console.log("Status code: " + response.statusCode);
-	   if(response.statusCode === 200) {
-	     // Parse the DOM body
-	     var $ = cheerio.load(body);
-	     Crawler.prototype.collect_internal_links($);
-	     Crawler.prototype.scrape_static_assets(url, $, function() {
-	     	callback();
-	     });
-	   }
-	   if(response.statusCode === 404) {
-	   	console.log("Error 404 attempting to visit page: " + url);
-		callback();
-	   }
+		if (err) { 
+			console.log("Error: " + err);
+		}
+		// Check status code
+		console.log("Status code: " + response.statusCode);
+
+		if(response.statusCode === 200) {
+			// Parse the DOM body
+			var $ = cheerio.load(body);
+			Crawler.prototype.collect_internal_links($);
+			Crawler.prototype.scrape_static_assets(url, $, function() {
+				callback();
+			});
+		}
+
+		if(response.statusCode === 404) {
+			console.log("Error 404 attempting to visit page: " + url);
+			callback();
+		}
+
+		if(response.statusCode === 500) {
+			console.log("Error 404 attempting to visit page: " + url);
+			callback();
+		}
 	});
 }
 
@@ -117,7 +124,7 @@ Crawler.prototype.collect_internal_links = function($) {
 
 	var absolute_links = $("a[href^='http']");
 	absolute_links.each(function() {
-	  all_absolute_links.push($(this).attr('href'));
+		all_absolute_links.push($(this).attr('href'));
 	});
 
 	console.log("Found " + all_relative_links.length + " relative links");
