@@ -45,9 +45,10 @@ Crawler.prototype.start = function(callback) {
  */
 Crawler.prototype.crawl = function(callback) {
 	var next_page = Crawler.pages_to_visit.pop();
-	if (next_page == undefined) {
-		console.log('next_page is undefined so stopping crawl.');
+	if (next_page === undefined) {
+		console.log('next_page is undefined so finishing the crawl.');
 		callback();
+		return;
 	}
 	console.log('Crawl #' + ++Crawler.crawl_counter);
 	console.log(next_page);
