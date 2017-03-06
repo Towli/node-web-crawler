@@ -22,6 +22,9 @@ function Crawler(base_url) {
 	Crawler.static_assets = [];
 }
 
+/**
+ * Removes a trailing slash from a given URL
+ */
 Crawler.remove_trailing_slash = function(url) {
 	return url.replace(/\/$/, "");
 }
