@@ -142,9 +142,10 @@ Crawler.prototype.collect_internal_links = function($) {
 	var resolved_link = "";
 	relative_links.each(function(i, item) {
 		resolved_link = Crawler.base_url + $(this).attr('href');
-		if (!(resolved_link in Crawler.pages_visited) && !(resolved_link in Crawler.pages_to_visit))
+		if (resolved_link !== undefined) {
+			if (!(resolved_link in Crawler.pages_visited) && !(resolved_link in Crawler.pages_to_visit))
 			Crawler.pages_to_visit.push(Crawler.base_url + $(this).attr('href'));
-			
+		}	
 	});
 }
 
