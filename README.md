@@ -75,9 +75,3 @@ For each page it visits, it determines the URLs of every static asset on that pa
 - jQuery
 - Cheerio
 - url
-
-## Moving Forwards
-
-Taking this crawler further includes the following:
-
-- 
